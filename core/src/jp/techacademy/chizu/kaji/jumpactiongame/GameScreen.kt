@@ -1,6 +1,7 @@
 package jp.techacademy.chizu.kaji.jumpactiongame
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
@@ -47,6 +48,7 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
     private var mFont: BitmapFont
     private var mScore: Int
     private var mHighScore: Int
+    private var mPrefs: Preferences
 
     init {
         val bgTexture = Texture("back.png")
@@ -72,6 +74,9 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
         mFont.data.setScale(0.8f)
         mScore = 0
         mHighScore = 0
+
+        mPrefs = Gdx.app.getPreferences("jp.teckacademy.chizu.kaji.jumpactiongame")
+        mHighScore = mPrefs.getInteger("HIGHSCORE", 0)
 
         createStage()
     }
@@ -202,6 +207,9 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
     }
 
     private fun updateGameOver() {
+        if (Gdx.input.justTouched()) {
+            mGame.screen = ResultScreen(mGame, mScore)
+        }
 
     }
 
@@ -223,6 +231,8 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
                 mScore++
                 if (mScore > mHighScore) {
                     mHighScore = mScore
+                    mPrefs.putInteger("HIGHSCORE", mHighScore)
+                    mPrefs.flush()
                 }
                 break
             }
