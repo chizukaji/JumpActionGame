@@ -39,8 +39,10 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
     private var mRandom: Random
     private var mSteps: ArrayList<Step>
     private var mStars: ArrayList<Star>
+
     private lateinit var mUfo: Ufo
     private lateinit var mPlayer: Player
+    private lateinit var mEnemy: Enemy
 
     private var mGameState: Int
     private var mHeightSoFar: Float = 0f
@@ -111,9 +113,12 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
 
         mPlayer.draw(mGame.batch)
 
+        mEnemy.draw(mGame.batch)
+
         mGame.batch.end()
 
         mGuiCamera.update()
+        mGame.batch.projectionMatrix = mGuiCamera.combined
         mGame.batch.begin()
         mFont.draw(mGame.batch, "HighScore: $mHighScore", 16f, GUI_HEIGHT -15)
         mFont.draw(mGame.batch, "Score: $mScore", 16f, GUI_HEIGHT -35)
@@ -131,6 +136,7 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
         val starTexture = Texture("star.png")
         val playerTexture = Texture("uma.png")
         val ufoTexture = Texture("ufo.png")
+        val enemyTexture = Texture("enemy.png")
 
         var y = 0f
 
@@ -158,6 +164,9 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
 
         mUfo = Ufo(ufoTexture,0,0,120,74)
         mUfo.setPosition(WORLD_WIDTH / 2 - Ufo.UFO_WIDTH / 2, y)
+
+        mEnemy = Enemy(enemyTexture, 0,0,72,72)
+        mEnemy.setPosition(WORLD_WIDTH / 2 - Enemy.ENEMY_WIDTH / 2, 10f)
     }
 
     private fun update(delta: Float) {
@@ -215,6 +224,11 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
 
     private fun checkCollision() {
         if (mPlayer.boundingRectangle.overlaps(mUfo.boundingRectangle)) {
+            mGameState = GAME_STATE_GAMEOVER
+            return
+        }
+
+        if (mPlayer.boundingRectangle.overlaps(mEnemy.boundingRectangle)) {
             mGameState = GAME_STATE_GAMEOVER
             return
         }
