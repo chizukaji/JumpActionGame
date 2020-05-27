@@ -4,22 +4,23 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.utils.viewport.FitViewport
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector3
-import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.utils.viewport.FitViewport
 import java.util.*
+
 
 class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
     companion object {
         val CAMERA_WIDTH = 10f
         val CAMERA_HEIGHT = 15f
         val WORLD_WIDTH = 10f
-        val WORLD_HEIGHT = 15 * 20
+        val WORLD_HEIGHT = 15 * 3
         val GUI_WIDTH = 320f
         val GUI_HEIGHT = 480f
 
@@ -51,6 +52,8 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
     private var mScore: Int
     private var mHighScore: Int
     private var mPrefs: Preferences
+
+    var sound = Gdx.audio.newSound(Gdx.files.internal("big-explosion1.mp3"))
 
     init {
         val bgTexture = Texture("back.png")
@@ -210,6 +213,9 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
         mPlayer.update(delta, accel)
         mHeightSoFar = Math.max(mPlayer.y, mHeightSoFar)
 
+        mEnemy.update(delta)
+
+
         checkCollision()
 
         checkGameOver()
@@ -229,6 +235,8 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
         }
 
         if (mPlayer.boundingRectangle.overlaps(mEnemy.boundingRectangle)) {
+            sound.play()
+            sound.dispose()
             mGameState = GAME_STATE_GAMEOVER
             return
         }

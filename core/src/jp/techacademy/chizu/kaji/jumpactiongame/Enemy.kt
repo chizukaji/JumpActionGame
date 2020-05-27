@@ -23,6 +23,7 @@ class Enemy (texture: Texture, srcX: Int, srcY: Int, srcWidth: Int, srcHeight: I
 
     fun update(deltaTime: Float) {
         x += velocity.x * deltaTime
+        velocity.add(0f, 0f)
 
         if (x < ENEMY_WIDTH / 2) {
             velocity.x = -velocity.x
