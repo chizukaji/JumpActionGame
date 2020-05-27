@@ -20,7 +20,7 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
         val CAMERA_WIDTH = 10f
         val CAMERA_HEIGHT = 15f
         val WORLD_WIDTH = 10f
-        val WORLD_HEIGHT = 15 * 3
+        val WORLD_HEIGHT = 15 * 20
         val GUI_WIDTH = 320f
         val GUI_HEIGHT = 480f
 
